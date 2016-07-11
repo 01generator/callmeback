@@ -8,9 +8,14 @@
  *  @license   MIT License
  */
 
+/**
+ * Class AdminCallMeBackController
+ */
 class AdminCallMeBackController extends ModuleAdminController
 {
-    /* Conctructor of the controller */
+    /**
+     * AdminCallMeBackController constructor.
+     */
     public function __construct()
     {
         $this->bootstrap = true;
@@ -95,34 +100,40 @@ class AdminCallMeBackController extends ModuleAdminController
         parent::__construct();
 
         $this->_select = 't.name as `product_name`';
-        $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` t ON (a.`id_product` = t.`id_product`)';
-        $this->_where = 'and t.`id_lang` = ' . $this->context->language->id;
+        $this->_join = 'LEFT JOIN `'._DB_PREFIX_.'product_lang` t ON (a.`id_product` = t.`id_product`)';
+        $this->_where = 'and t.`id_lang` = '.$this->context->language->id;
         $this->_orderBy = 'date_add';
         $this->_orderWay = 'DESC';
     }
 
-    public function calledStatus($id_callmeback, $tr)
+    /**
+     * @param int    $idCallMeBack
+     * @param string $tr
+     * @return mixed
+     */
+    public function calledStatus($idCallMeBack, $tr)
     {
-        // print_r($tr);
-        // die();
-        $tpl = $this->context->smarty->createTemplate(_PS_MODULE_DIR_ . '/callmeback/views/templates/admin/check-called.tpl');
+        $tpl = $this->context->smarty->createTemplate(_PS_MODULE_DIR_.'/callmeback/views/templates/admin/check-called.tpl');
         $tpl->assign(
             array(
                 'id_callmeback' => $tr['id'],
                 'called' => $tr['called'],
             )
         );
+
         return $tpl->fetch();
     }
 
-    /* Loads CSS and JS */
+    /**
+     * Load JS and CSS
+     */
     public function setMedia()
     {
         // We call the parent method
         parent::setMedia();
         // Save the module path in a variable
-        $this->path = __PS_BASE_URI__ . 'modules/callmeback/';
+        $this->path = __PS_BASE_URI__.'modules/callmeback/';
         // Include the module CSS and JS files needed
-        $this->context->controller->addJS($this->path . 'views/js/callmeback-admin.js');
+        $this->context->controller->addJS($this->path.'views/js/callmeback-admin.js');
     }
 }

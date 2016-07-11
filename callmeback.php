@@ -8,19 +8,30 @@
  *  @license   MIT License
  */
 
-class CallMeBack extends module
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
+/**
+ * Class CallMeBack
+ */
+class CallMeBack extends Module
 {
-    /* Constructor */
+    const SURNAME = 'CALLMEBACK_SURNAME';
+    const EMAIL = 'CALLMEBACK_EMAIL';
+    const TELEPHONE2 = 'CALLMEBACK_TELEPHONE2';
+    const MESSAGE = 'CALLMEBACK_MSG';
+    const HOURS = 'CALLMEBACK_HOURS';
+
+    /**
+     * CallMeBack constructor.
+     */
     public function __construct()
     {
 
-        if (!defined('_PS_VERSION_')) {
-            exit;
-        }
-
         $this->name = 'callmeback';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.6';
+        $this->version = '1.0.7';
         $this->author = '01generator';
         $this->module_key = '';
         $this->need_instance = 0;
@@ -29,19 +40,26 @@ class CallMeBack extends module
         parent::__construct();
         $this->displayName = $this->l('Call me back');
         $this->description = $this->l('Now allow your customers to leave their telephone number so you can call them back');
+
+        $this->controllers = array('ajax');
     }
 
-    /* Installation of module */
+    /**
+     * Install this module
+     *
+     * @return bool Whether the module has been successfully installed
+     * @throws PrestaShopException
+     */
     public function install()
     {
         // Install hooks
         // displayProductButtons, displayFooterProduct, displayProductTab, displayProductTabContent
-        if (
-            !parent::install() ||
+        if (!parent::install() ||
             !$this->registerHook('displayProductButtons') ||
-            // !$this->registerHook('displayFooterProduct') ||
             !$this->registerHook('actionAdminControllerSetMedia') ||
-            !$this->registerHook('displayFooter')
+            !$this->registerHook('displayFooter') ||
+            !$this->registerHook('displayHeader') ||
+            !$this->registerHook('displayBackOfficeHeader')
         ) {
             return false;
         }
@@ -51,17 +69,18 @@ class CallMeBack extends module
         }
 
         // Create SQL table for trasaction tracking
-        include_once _PS_MODULE_DIR_ . $this->name . '/callmeback_sql.php';
-        $callmebacksql_install = new CallMeBackSQL();
-        $callmebacksql_install->createTables();
-
-        // Delete configuration values
-        // Configuration::deleteByName('');
+        include_once _PS_MODULE_DIR_.$this->name.'/sql/CallMeBackSql.php';
+        $callMeBackSqlInstall = new CallMeBackSql();
+        $callMeBackSqlInstall->createTables();
 
         return true;
     }
 
-    /* Unistallation tasks */
+    /**
+     * Uninstall this module
+     *
+     * @return bool Whether this module has been successfully uninstalled
+     */
     public function uninstall()
     {
         if (!parent::uninstall()) {
@@ -77,82 +96,141 @@ class CallMeBack extends module
         return true;
     }
 
-    /* Install the required tabs by the module */
-    public function installTab($parent, $class_name, $tab_name)
+    /**
+     * Install the required tabs by the module
+     *
+     * @param string $parent    Parent class name
+     * @param string $className Class name of new tab
+     * @param string $tabName   Tab name of new tab
+     * @return int New tab ID
+     */
+    public function installTab($parent, $className, $tabName)
     {
         // Create new admin tab
         $tab = new Tab();
         $tab->id_parent = (int) Tab::getIdFromClassName($parent);
         $tab->name = array();
         foreach (Language::getLanguages(true) as $lang) {
-            $tab->name[$lang['id_lang']] = $tab_name;
+            $tab->name[$lang['id_lang']] = $tabName;
         }
 
-        $tab->class_name = $class_name;
+        $tab->class_name = $className;
         $tab->module = $this->name;
         $tab->active = 1;
+
         return $tab->add();
     }
 
-    /* Unistall the required admin tabs of the module */
-    public function uninstallTab($class_name)
+    /**
+     * Uninstall the required admin tabs of the module
+     *
+     * @param string $className Class name of tab to be uninstalled
+     * @return bool Whether the tab has been successfully uninstalled
+     */
+    public function uninstallTab($className)
     {
         // Retrieve Tab ID
-        $id_tab = (int) Tab::getIdFromClassName($class_name);
+        $idTab = (int) Tab::getIdFromClassName($className);
         // Load tab
-        $tab = new Tab((int) $id_tab);
+        $tab = new Tab((int) $idTab);
         // Delete it
         return $tab->delete();
     }
 
-    /* Hook Controller */
-    public function getHookController($hook_name)
+    /**
+     * Get hook Controller
+     *
+     * @param string $hookName Name of hook
+     * @return mixed
+     */
+    public function getHookController($hookName)
     {
-        require_once dirname(__FILE__) . '/controllers/hook/' . $hook_name . '.php';
-        $controller_name = $this->name . $hook_name . 'Controller';
-        $controller = new $controller_name($this, __FILE__, $this->_path);
+        require_once dirname(__FILE__).'/controllers/hook/'.$hookName.'.php';
+        $controllerName = $this->name.$hookName.'Controller';
+        $controller = new $controllerName($this, __FILE__, $this->_path);
+
         return $controller;
     }
 
-    // public function hookdisplayFooterProduct()
-    // {
-    //     $config = $this->getConfiguration();
-    //     $this->context->smarty->assign('callmeback_config', $config);
-    //     return $this->display(__FILE__, 'views/templates/front/callmebutton.tpl');
-    // }
+    /**
+     * Hook to FO HEAD tags
+     *
+     * @return string Hook HTML
+     */
+    public function hookDisplayHeader()
+    {
+        $this->context->smarty->assign(array(
+            'callmeback_ajax' => $this->context->link->getModuleLink($this->name, 'ajax', array(), Tools::usingSecureMode()),
+        ));
 
+        return $this->display(__FILE__, 'views/templates/front/jsdef.tpl');
+    }
+
+    /**
+     * Hook to BO HEAD tags
+     *
+     * @return string Hook HTML
+     */
+    public function hookDisplayBackOfficeHeader()
+    {
+        $this->context->smarty->assign(array(
+            'callmeback_ajax' => $this->context->link->getModuleLink($this->name, 'ajax', array(), Tools::usingSecureMode()),
+        ));
+
+        return $this->display(__FILE__, 'views/templates/admin/jsdef.tpl');
+    }
+
+    /**
+     * Hook to display Product Buttons
+     *
+     * @return string Hook HTML
+     */
     public function hookdisplayProductButtons()
     {
         $config = $this->getConfiguration();
-        $config['callmebackimg'] = $this->getBaseUrl() . 'modules/callmeback/phone-call.png';
+        $config['callmebackimg'] = $this->getBaseUrl().'modules/callmeback/phone-call.png';
         $this->context->smarty->assign('callmeback_config', $config);
+
         return $this->display(__FILE__, 'views/templates/front/callmebutton.tpl');
     }
 
+    /**
+     * Hook to display footer
+     *
+     * @param array $params Hook parameters
+     */
     public function hookDisplayFooter($params)
     {
-        $this->context->controller->addJs($this->_path . 'views/js/callmeback.js');
+        $this->context->controller->addJs($this->_path.'views/js/callmeback.js');
     }
 
-    // public function getLanguages()
-    // {
-    //     // Retrieve all enabled languages
-    //     $queryLang = 'SELECT id_lang, name, iso_code FROM `' . _DB_PREFIX_ . 'lang` WHERE `active` = 1';
-    //     $languages = Db::getInstance()->executeS($queryLang);
-    //     return $languages;
-    // }
-
+    /**
+     * Get module configuration page
+     *
+     * @return string Configuration page HTML
+     */
     public function getContent()
     {
         $this->processConfiguration();
+
         return $this->configurationForm();
     }
 
+    /**
+     * Hook to set media method of AdminController
+     *
+     * @param array $params Hook parameters
+     */
     public function hookActionAdminControllerSetMedia($params)
     {
-        $this->context->controller->addJS($this->_path . '/views/js/callmeback-admin-notify.js');
+        $this->context->controller->addJS($this->_path.'/views/js/callmeback-admin-notify.js');
     }
 
+    /**
+     * Generate configuration form
+     *
+     * @return string Configuration form HTML
+     */
     public function configurationForm()
     {
         $languages = Language::getLanguages(false);
@@ -181,10 +259,9 @@ class CallMeBack extends module
                     'type' => 'switch',
                     'label' => $this->l('Enable surname'),
                     'desc' => $this->l(
-                        'If yes when user clicks on callmeback button, ' .
-                        'entering his/her surname will be required'
+                        'If yes when user clicks on callmeback button, entering his/her surname will be required'
                     ),
-                    'name' => 'callmeback_surname',
+                    'name' => self::SURNAME,
                     'is_bool' => true,
                     'values' => array(
                         array(
@@ -203,10 +280,9 @@ class CallMeBack extends module
                     'type' => 'switch',
                     'label' => $this->l('Enable email'),
                     'desc' => $this->l(
-                        'If yes when user clicks on callmeback button, ' .
-                        'entering his/her email will be required'
+                        'If yes when user clicks on callmeback button, entering his/her email will be required'
                     ),
-                    'name' => 'callmeback_email',
+                    'name' => self::EMAIL,
                     'is_bool' => true,
                     'values' => array(
                         array(
@@ -225,11 +301,9 @@ class CallMeBack extends module
                     'type' => 'switch',
                     'label' => $this->l('Enable telephone 2'),
                     'desc' => $this->l(
-                        'If yes when user clicks on callmeback button, ' .
-                        'entering his/her second telephone will be mandatory ' .
-                        'and telephone #1 must be enabled'
+                        'If yes when user clicks on callmeback button, entering his/her second telephone will be mandatory and telephone #1 must be enabled'
                     ),
-                    'name' => 'callmeback_telephone2',
+                    'name' => self::TELEPHONE2,
                     'is_bool' => true,
                     'values' => array(
                         array(
@@ -248,10 +322,9 @@ class CallMeBack extends module
                     'type' => 'switch',
                     'label' => $this->l('Enable message'),
                     'desc' => $this->l(
-                        'If yes when user clicks on callmeback button, ' .
-                        'he/she will be able to leave a message for you.'
+                        'If yes when user clicks on callmeback button, he/she will be able to leave a message to you.'
                     ),
-                    'name' => 'callmeback_msg',
+                    'name' => self::MESSAGE,
                     'is_bool' => true,
                     'values' => array(
                         array(
@@ -270,10 +343,9 @@ class CallMeBack extends module
                     'type' => 'switch',
                     'label' => $this->l('Enable hours'),
                     'desc' => $this->l(
-                        'If yes when user clicks on callmeback button, ' .
-                        'he/she will be able to enter the hours that he/she is available to be called.'
+                        'If yes when user clicks on callmeback button, he/she will be able to enter the hours that he/she is available to be called.'
                     ),
-                    'name' => 'callmeback_hours',
+                    'name' => self::HOURS,
                     'is_bool' => true,
                     'values' => array(
                         array(
@@ -292,66 +364,77 @@ class CallMeBack extends module
         );
 
         // 5, callmeback_surname, callmeback_email, callmeback_telephone2, callmeback_email, callmeback_msg, callmeback_hours
-        $helper->fields_value['callmeback_surname'] = Configuration::get('CALLMEBACK_SURNAME');
-        $helper->fields_value['callmeback_email'] = Configuration::get('CALLMEBACK_EMAIL');
-        $helper->fields_value['callmeback_telephone2'] = Configuration::get('CALLMEBACK_TELEPHONE2');
-        $helper->fields_value['callmeback_msg'] = Configuration::get('CALLMEBACK_MSG');
-        $helper->fields_value['callmeback_hours'] = Configuration::get('CALLMEBACK_HOURS');
+        $helper->fields_value[self::SURNAME] = Configuration::get(self::SURNAME);
+        $helper->fields_value[self::EMAIL] = Configuration::get(self::EMAIL);
+        $helper->fields_value[self::TELEPHONE2] = Configuration::get(self::TELEPHONE2);
+        $helper->fields_value[self::MESSAGE] = Configuration::get(self::MESSAGE);
+        $helper->fields_value[self::HOURS] = Configuration::get(self::HOURS);
 
         return $helper->generateForm($this->fields_form);
     }
 
+    /**
+     * Process submitted configuration
+     */
     public function processConfiguration()
     {
         if (Tools::isSubmit('submitConfigCallMeBack')) {
-            $callmeback_surname = Tools::getValue('callmeback_surname');
-            $callmeback_email = Tools::getValue('callmeback_email');
-            $callmeback_telephone2 = Tools::getValue('callmeback_telephone2');
-            $callmeback_msg = Tools::getValue('callmeback_msg');
-            $callmeback_hours = Tools::getValue('callmeback_hours');
-
-            Configuration::updateValue('CALLMEBACK_SURNAME', $callmeback_surname);
-            Configuration::updateValue('CALLMEBACK_EMAIL', $callmeback_email);
-            Configuration::updateValue('CALLMEBACK_TELEPHONE2', $callmeback_telephone2);
-            Configuration::updateValue('CALLMEBACK_MSG', $callmeback_msg);
-            Configuration::updateValue('CALLMEBACK_HOURS', $callmeback_hours);
+            Configuration::updateValue(self::SURNAME, Tools::getValue(self::SURNAME));
+            Configuration::updateValue(self::EMAIL, Tools::getValue(self::EMAIL));
+            Configuration::updateValue(self::TELEPHONE2, Tools::getValue(self::TELEPHONE2));
+            Configuration::updateValue(self::MESSAGE, Tools::getValue(self::MESSAGE));
+            Configuration::updateValue(self::HOURS, Tools::getValue(self::HOURS));
 
             // all ok :)
             $this->context->smarty->assign('confirmation', 'ok');
         }
     }
 
+    /**
+     * Get configuration values
+     *
+     * @return array Configuration values
+     */
     public function getConfiguration()
     {
         $configs = array();
-        $configs['callmeback_surname'] = Configuration::get('CALLMEBACK_SURNAME');
-        $configs['callmeback_email'] = Configuration::get('CALLMEBACK_EMAIL');
-        $configs['callmeback_telephone2'] = Configuration::get('CALLMEBACK_TELEPHONE2');
-        $configs['callmeback_msg'] = Configuration::get('CALLMEBACK_MSG');
-        $configs['callmeback_hours'] = Configuration::get('CALLMEBACK_HOURS');
+        $configs[self::SURNAME] = Configuration::get(self::SURNAME);
+        $configs[self::EMAIL] = Configuration::get(self::EMAIL);
+        $configs[self::TELEPHONE2] = Configuration::get(self::TELEPHONE2);
+        $configs[self::MESSAGE] = Configuration::get(self::MESSAGE);
+        $configs[self::HOURS] = Configuration::get(self::HOURS);
 
         return $configs;
     }
 
-    /* Function to get website url*/
+    /**
+     * Function to get website url
+     *
+     * @return string Website URL
+     */
     public function getBaseUrl()
     {
         if (_PS_BASE_URL_SSL_) {
-            $base_url = _PS_BASE_URL_SSL_;
+            $baseUrl = _PS_BASE_URL_SSL_;
         } else {
-            $base_url = _PS_BASE_URL_;
+            $baseUrl = _PS_BASE_URL_;
         }
 
         if (__PS_BASE_URI__) {
-            $base_url .= __PS_BASE_URI__;
+            $baseUrl .= __PS_BASE_URI__;
         }
 
-        return $base_url;
+        return $baseUrl;
     }
 
+    /**
+     * Get translated ajax messages
+     *
+     * @return array Translated ajax messages
+     */
     public function getTranslatedAjaxMessages()
     {
-        $trans_ajax_msg = array(
+        return array(
             'form_error' => $this->l('Form submission resulted in an error. Please contact the administrator.'),
             'form_error_name' => $this->l('Name field is required.'),
             'form_error_surname' => $this->l('Surname field is required.'),
@@ -359,6 +442,5 @@ class CallMeBack extends module
             'form_error_telephone_field' => $this->l('Telephone field is required.'),
             'form_error_telephone' => $this->l('Telephone is not correct, it should be 10 digits.'),
         );
-        return $trans_ajax_msg;
     }
 }

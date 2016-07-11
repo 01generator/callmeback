@@ -9,7 +9,7 @@ $( document ).ready(function() {
     var callmeback_admin_link = $('#subtab-AdminCallMeBack a').attr('href');
     $('#header_notifs_icon_wrapper').append('<li id="callmeback-notify"><a href="'+callmeback_admin_link+'"><i class="icon-phone"></i></li></a>');
     $.ajax({
-        url: baseUrl + '/modules/callmeback/callmeback-ajax.php',
+        url: callmeback_ajax,
         type: 'POST',
         data: 'method=notifyCallmeback',
         dataType: 'json',
@@ -21,7 +21,3 @@ $( document ).ready(function() {
         }
     });
 });
-
-// <span id="orders_notif_number_wrapper" class="notifs_badge">
-//     <span id="orders_notif_value">3</span>
-// </span>
