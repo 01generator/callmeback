@@ -1,7 +1,6 @@
 /*
 * @author Sarafoudis Nikolaos for 01generator.com <modules@01generator.com>
-* @copyright 2015 Sarafoudis Nikolaos
-* @license All Rights Reserved read license.txt file for more information
+* @license MIT License
 */
 
 $( document ).ready(function() {

@@ -1,12 +1,11 @@
 <?php
 /**
- * 2015 Sarafoudis Nikolaos for 01generator.com
+ * 2015 Sarafoudis Nikolaos for 01generator
  *
  * This is a Payment module for Prestashop. This module requires
  *
- *  @author    Sarafoudis Nikolaos for 01generator.com
- *  @copyright Copyright (c) 2015 All Rights Reserved
- *  @license   read license.txt file for more information
+ *  @author    Sarafoudis Nikolaos for 01generator
+ *  @license   MIT License
  */
 
 class AdminCallMeBackController extends ModuleAdminController
@@ -97,7 +96,7 @@ class AdminCallMeBackController extends ModuleAdminController
 
         $this->_select = 't.name as `product_name`';
         $this->_join = 'LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` t ON (a.`id_product` = t.`id_product`)';
-        $this->_where = 'and t.`id_lang` = '.$this->context->language->id;
+        $this->_where = 'and t.`id_lang` = ' . $this->context->language->id;
         $this->_orderBy = 'date_add';
         $this->_orderWay = 'DESC';
     }

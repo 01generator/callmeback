@@ -25,7 +25,7 @@ Module Icon made by http://www.flaticon.com/authors/gregor-cresnar from www.flat
 * Telephone dropdown code country
 * Try it in PS 1.5.XX
 
-### Please fill free to contribute  ###
+### Please feel free to contribute  ###
 
 Hope you enjoy it and find it usefull
 

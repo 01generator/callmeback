@@ -1,7 +1,6 @@
 {*
 *  @ LICENSE
-*    Copyright (c) Sarafoudis Nikolaos for 01generator.com All Rights Reserved
-*    read license.txt file for more information
+*    MIT License
 *  @ LICENSE
 *}
 <div class="row">

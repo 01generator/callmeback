@@ -1,12 +1,11 @@
 <?php
 /**
- * 2015 Sarafoudis Nikolaos for 01generator.com
+ * 2015 Sarafoudis Nikolaos for 01generator
  *
  * This is a Payment module for Prestashop. This module requires
  *
- *  @author    Sarafoudis Nikolaos for 01generator.com
- *  @copyright Copyright (c) 2015 All Rights Reserved
- *  @license   read license.txt file for more information
+ *  @author    Sarafoudis Nikolaos for 01generator
+ *  @license   MIT License
  */
 
 class CallMeBackSQL
