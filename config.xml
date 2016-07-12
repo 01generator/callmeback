@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+  <name>callmeback</name>
+  <displayName><![CDATA[Call me back]]></displayName>
+  <version><![CDATA[1.0.7]]></version>
+  <description><![CDATA[Now allow your customers to leave their telephone number so you can call them back]]></description>
+  <author><![CDATA[01generator]]></author>
+  <tab><![CDATA[front_office_features]]></tab>
+  <is_configurable>1</is_configurable>
+  <need_instance>0</need_instance>
+  <limited_countries></limited_countries>
+</module>

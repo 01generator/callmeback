@@ -16,9 +16,8 @@ $( document ).ready(function() {
             } else {
                 call_checked = 'true';
             }
-            console.log(baseUrl + '/modules/callmeback/callmeback-ajax.php?method=updateCalled&callid=' + callid + '&callchecked=' + call_checked);
             $.ajax({
-                url: baseUrl + '/modules/callmeback/callmeback-ajax.php',
+                url: callmeback_ajax,
                 type: 'POST',
                 data: 'method=updateCalled&callid=' + callid + '&callchecked=' + call_checked,
                 dataType: 'json',

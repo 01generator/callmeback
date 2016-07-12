@@ -8,12 +8,20 @@
  *  @license   MIT License
  */
 
-class CallMeBackSQL
+/**
+ * Class CallMeBackSql
+ */
+class CallMeBackSql
 {
+    /**
+     * Create DB tables
+     *
+     * @return bool Whether the tables have been succesfully created
+     */
     public function createTables()
     {
-        if (!Db::getInstance()->Execute('
-            CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'callmeback` (
+        if (!Db::getInstance()->execute('
+            CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'callmeback` (
                 `id` int(10) NOT NULL AUTO_INCREMENT,
                 `id_shop` int(11) unsigned NOT NULL DEFAULT \'1\',
                 `id_product` int(11) unsigned NOT NULL DEFAULT \'1\',
@@ -29,9 +37,10 @@ class CallMeBackSQL
                 PRIMARY KEY (`id`),
                 KEY `id_shop` (`id_shop`),
                 KEY `id_product` (`id_product`)
-            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8 AUTO_INCREMENT=1')) {
+            ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8 AUTO_INCREMENT=1')) {
             return false;
         }
 
+        return true;
     }
 }
