@@ -30,3 +30,7 @@ Module Icon made by http://www.flaticon.com/authors/gregor-cresnar from www.flat
 Hope you enjoy it and find it usefull
 
 Peace and love :)
+
+### Contributors List ###
+
+* Michael Dekker (firstred) https://github.com/firstred
