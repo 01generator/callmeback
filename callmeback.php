@@ -160,7 +160,7 @@ class CallMeBack extends Module
     public function hookDisplayHeader()
     {
         $this->context->smarty->assign(array(
-            'callmeback_ajax' => $this->context->link->getModuleLink($this->name, 'ajax', array(), Tools::usingSecureMode()),
+            'callmeback_ajax' => $this->context->link->getModuleLink($this->name, 'ajax', array(), null, null, true),
         ));
 
         return $this->display(__FILE__, 'views/templates/front/jsdef.tpl');
@@ -174,7 +174,7 @@ class CallMeBack extends Module
     public function hookDisplayBackOfficeHeader()
     {
         $this->context->smarty->assign(array(
-            'callmeback_ajax' => $this->context->link->getModuleLink($this->name, 'ajax', array(), Tools::usingSecureMode()),
+            'callmeback_ajax' => $this->context->link->getModuleLink($this->name, 'ajax', array(), null, null, true),
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/jsdef.tpl');
