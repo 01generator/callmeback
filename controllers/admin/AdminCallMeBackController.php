@@ -101,7 +101,7 @@ class AdminCallMeBackController extends ModuleAdminController
 
         $this->_select = 't.name as `product_name`';
         $this->_join = 'LEFT JOIN `'._DB_PREFIX_.'product_lang` t ON (a.`id_product` = t.`id_product`)';
-        $this->_where = 'and t.`id_lang` = '.$this->context->language->id;
+        $this->_where = 'AND t.`id_lang` = '.$this->context->language->id.' AND t.`id_shop`=a.`id_shop`';
         $this->_orderBy = 'date_add';
         $this->_orderWay = 'DESC';
     }
