@@ -398,11 +398,11 @@ class CallMeBack extends Module
     public function getConfiguration()
     {
         $configs = array();
-        $configs[self::SURNAME] = Configuration::get(self::SURNAME);
-        $configs[self::EMAIL] = Configuration::get(self::EMAIL);
-        $configs[self::TELEPHONE2] = Configuration::get(self::TELEPHONE2);
-        $configs[self::MESSAGE] = Configuration::get(self::MESSAGE);
-        $configs[self::HOURS] = Configuration::get(self::HOURS);
+        $configs[strtolower(self::SURNAME)] = Configuration::get(self::SURNAME);
+        $configs[strtolower(self::EMAIL)] = Configuration::get(self::EMAIL);
+        $configs[strtolower(self::TELEPHONE2)] = Configuration::get(self::TELEPHONE2);
+        $configs[strtolower(self::MESSAGE)] = Configuration::get(self::MESSAGE);
+        $configs[strtolower(self::HOURS)] = Configuration::get(self::HOURS);
 
         return $configs;
     }
