@@ -1,0 +1,19 @@
+#callmeback {
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 15px;
+}
+
+#callmeback-form {
+  padding: 0 20px 20px;
+}
+
+#callmeback-form #callmeback_telephone.error,
+#callmeback-form #callmeback_telephone2.error {
+  border: 1px solid crimson;
+}
+
+#callmeback-form #error-msg {
+  padding-top: 7px;
+  color: crimson;
+}

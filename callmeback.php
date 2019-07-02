@@ -238,6 +238,7 @@ class CallMeBack extends Module
             $this->context->controller->addJs($this->_path.'views/js/callmeback.js');
             $this->context->controller->addJs($this->_path.'views/js/intlTelInput.min.js');
             $this->context->controller->addCss($this->_path.'views/css/intlTelInput.min.css');
+            $this->context->controller->addCss($this->_path.'views/css/style.css');
         }
         
     }

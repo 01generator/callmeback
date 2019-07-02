@@ -14,6 +14,7 @@
         </div>
         <div class="buttons_bottom_block no-print col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <button id="callmeback" class="button btn btn-default">
+                <i class="icon-phone"></i>
                 {l s='Call me back' mod='callmeback'}
                 {* <img src="{$callmeback_config.callmebackimg|escape:'htmlall':'UTF-8'}" alt="callmeback"> *}
             </button>
@@ -42,13 +43,13 @@
                 {/if}
                 <div class="form-group">
                     <label for="callmeback_telephone">{l s='Telephone' mod='callmeback'}</label>
-                    <input type="text" class="form-control" name="callmeback_telephone" id="callmeback_telephone"  mod='callmeback'}" required>
+                    <input type="text" class="form-control" name="callmeback_telephone" id="callmeback_telephone" required>
                 </div>
                 {if isset($callmeback_config.callmeback_telephone2)}
                     {if $callmeback_config.callmeback_telephone2 eq 1}
                 <div class="form-group">
                     <label for="callmeback_telephone2">{l s='Telephone' mod='callmeback'} 2 </label>
-                    <input type="text" class="form-control" name="callmeback_telephone2" id="callmeback_telephone2"  mod='callmeback'}">
+                    <input type="text" class="form-control" name="callmeback_telephone2" id="callmeback_telephone2">
                 </div>
                     {/if}
                 {/if}

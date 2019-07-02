@@ -29,6 +29,11 @@ $(document).ready(function () {
         $('#callmeback-form').toggle('slow');
     });
 
+    $('#callmeback_telephone, #callmeback_telephone2').on('focus', function () {
+        $('#callmeback_telephone').removeClass('error');
+        $('#callmeback_telephone2').removeClass('error');
+    });
+
     $('#callmeback-submit').on('click', function () {
         event.preventDefault();
         var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
@@ -38,11 +43,13 @@ $(document).ready(function () {
 
         console.log($('#callmeback_telephone2'));
         if (typeof iti1 != 'undefined' && !iti1.isValidNumber()) {
+            $('#callmeback_telephone').addClass('error');
             var errorCode = iti1.getValidationError();
             errorMsg.innerHTML = errorMap[errorCode];
             $(errorMsg).removeClass('hide');
         }
         else if (typeof iti2 != 'undefined' && $('#callmeback_telephone2').val().trim() != '' && !iti2.isValidNumber()) {
+            $('#callmeback_telephone2').addClass('error');
             var errorCode = iti2.getValidationError();
             errorMsg.innerHTML = errorMap[errorCode];
             $(errorMsg).removeClass('hide');
