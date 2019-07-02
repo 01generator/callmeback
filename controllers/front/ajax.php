@@ -52,13 +52,13 @@ class CallMeBackAjaxModuleFrontController extends ModuleFrontController
                     $inputErrors[] = $translatedFormessages['form_error_email'];
                 }
 
-                if (!$telephone1) {
-                    $inputErrors[] = $translatedFormessages['form_error_telephone_field'];
-                } elseif (!is_numeric($telephone1)) {
-                    $inputErrors[] = $translatedFormessages['form_error_telephone'];
-                } elseif (strlen($telephone1) != 10) {
-                    $inputErrors[] = $translatedFormessages['form_error_telephone'];
-                }
+                // if (!$telephone1) {
+                //     $inputErrors[] = $translatedFormessages['form_error_telephone_field'];
+                // } elseif (!is_numeric($telephone1)) {
+                //     $inputErrors[] = $translatedFormessages['form_error_telephone'];
+                // } elseif (strlen($telephone1) != 10) {
+                //     $inputErrors[] = $translatedFormessages['form_error_telephone'];
+                // }
 
                 if (empty($inputErrors)) {
                     if ($token === $systemToken) {

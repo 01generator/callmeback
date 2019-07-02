@@ -13,12 +13,12 @@
             </div>
         </div>
         <div class="buttons_bottom_block no-print col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <button id="callmeback" class="exclusive button btn btn-default">
+            <button id="callmeback" class="button btn btn-default">
                 {l s='Call me back' mod='callmeback'}
                 {* <img src="{$callmeback_config.callmebackimg|escape:'htmlall':'UTF-8'}" alt="callmeback"> *}
             </button>
         </div>
-        <div id="callmeback-form" style="display: none;" class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+        <div id="callmeback-form" style="display: none;" class="col-lg-12 col-md-6 col-sm-6 col-xs-6">
             <form action="">
                 <div class="form-group">
                     <label for="callmeback_name">{l s='Name' mod='callmeback'}</label>
@@ -42,13 +42,13 @@
                 {/if}
                 <div class="form-group">
                     <label for="callmeback_telephone">{l s='Telephone' mod='callmeback'}</label>
-                    <input type="text" class="form-control" name="callmeback_telephone" id="callmeback_telephone" placeholder="{l s='Telephone ex. +30 699#######' mod='callmeback'}" required>
+                    <input type="text" class="form-control" name="callmeback_telephone" id="callmeback_telephone"  mod='callmeback'}" required>
                 </div>
                 {if isset($callmeback_config.callmeback_telephone2)}
                     {if $callmeback_config.callmeback_telephone2 eq 1}
                 <div class="form-group">
-                    <label for="callmeback_telephone2">{l s='Telephone' mod='callmeback'}</label>
-                    <input type="text" class="form-control" name="callmeback_telephone2" id="callmeback_telephone2" placeholder="{l s='Telephone 2 ex. +30 699#######' mod='callmeback'}">
+                    <label for="callmeback_telephone2">{l s='Telephone' mod='callmeback'} 2 </label>
+                    <input type="text" class="form-control" name="callmeback_telephone2" id="callmeback_telephone2"  mod='callmeback'}">
                 </div>
                     {/if}
                 {/if}
@@ -75,7 +75,8 @@
                 </div>
                     {/if}
                 {/if}
-                <button id="callmeback-submit" class="exclusive button btn btn-default">{l s='Submit' mod='callmeback'}</button>
+                <span id="error-msg" class="pull-left hide">Hello</span>
+                <button id="callmeback-submit" class="button btn btn-default pull-right">{l s='Submit' mod='callmeback'}</button>
             </form>
         </div>
     </div>
