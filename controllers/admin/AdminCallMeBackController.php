@@ -21,6 +21,7 @@ class AdminCallMeBackController extends ModuleAdminController
         $this->bootstrap = true;
         $this->table = 'callmeback';
         $this->className = 'callmeback';
+        $this->identifier = 'id';
         $this->list_no_link = true;
         $this->fields_list = array(
             'id' => array(
@@ -85,10 +86,10 @@ class AdminCallMeBackController extends ModuleAdminController
             ),
             'called' => array(
                 'title' => $this->l('Called'),
+                'active' => 'toggleCalled',
                 'align' => 'text-center',
                 'havingFilter' => true,
-                'filter_key' => 'a!called',
-                'callback' => 'calledStatus',
+                'type' => 'bool',
                 'class' => 'calledStatus',
             ),
         );
@@ -101,39 +102,38 @@ class AdminCallMeBackController extends ModuleAdminController
 
         $this->_select = 't.name as `product_name`';
         $this->_join = 'LEFT JOIN `'._DB_PREFIX_.'product_lang` t ON (a.`id_product` = t.`id_product`)';
-        $this->_where = 'and t.`id_lang` = '.$this->context->language->id;
+        $this->_where = 'AND t.`id_lang` = '.$this->context->language->id.' AND t.`id_shop`=a.`id_shop`';
         $this->_orderBy = 'date_add';
         $this->_orderWay = 'DESC';
     }
 
     /**
-     * @param int    $idCallMeBack
-     * @param string $tr
-     * @return mixed
+     * Implements postProcess()
      */
-    public function calledStatus($idCallMeBack, $tr)
+    public function postProcess()
     {
-        $tpl = $this->context->smarty->createTemplate(_PS_MODULE_DIR_.'/callmeback/views/templates/admin/check-called.tpl');
-        $tpl->assign(
-            array(
-                'id_callmeback' => $tr['id'],
-                'called' => $tr['called'],
-            )
-        );
-
-        return $tpl->fetch();
+        
+        if (Tools::getIsset('toggleCalled'.$this->table)) {
+            $this->toggleArchived();
+        }
+        parent::postProcess();
     }
 
     /**
-     * Load JS and CSS
+     * Helper function that updates Called status of row.
      */
-    public function setMedia()
-    {
-        // We call the parent method
-        parent::setMedia();
-        // Save the module path in a variable
-        $this->path = __PS_BASE_URI__.'modules/callmeback/';
-        // Include the module CSS and JS files needed
-        $this->context->controller->addJS($this->path.'views/js/callmeback-admin.js');
+    public function toggleArchived()
+    {   
+        $id = Tools::getValue('id');
+        $query = "SELECT `called` FROM " . _DB_PREFIX_ . "callmeback WHERE `id`=" . $id;
+        $is_called = Db::getInstance()->getValue($query);
+
+        // Check called value and change it.
+        $is_called == 0 ? $data = array('called' => 1) : $data = array('called' => 0);
+
+        $where = '`id`=' . $id;
+        Db::getInstance()->update('callmeback', $data, $where);
+        Tools::redirectAdmin(self::$currentIndex.'&token='.$this->token);
     }
+
 }
