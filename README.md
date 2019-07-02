@@ -17,12 +17,13 @@
 
 ### References ###
 
-Module Icon made by http://www.flaticon.com/authors/gregor-cresnar from www.flaticon.com 
+* Module Icon made by http://www.flaticon.com/authors/gregor-cresnar from www.flaticon.com
+* International number codes by https://jackocnr.com/ from https://github.com/jackocnr/intl-tel-input
 
 ### To-do  ###
 
 * Form submission security
-* Telephone dropdown code country
+✔ Telephone dropdown code country
 * Try it in PS 1.5.XX
 
 ### Please feel free to contribute  ###
